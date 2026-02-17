@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HAPPY 21st TWINNN</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: black;
+    color: white;
+    text-align: center;
+}
+
+/* Guyana flag stripe */
+.flag-bar {
+    height: 8px;
+    background: linear-gradient(to right, #009e49 0% 60%, #fcd116 60% 85%, #ce1126 85% 100%);
+}
+
+.section {
+    padding: 60px 20px;
+}
+
+.card {
+    background: rgba(255,255,255,0.08);
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 500px;
+    border-radius: 10px;
+}
+
+button {
+    padding: 12px 20px;
+    margin: 10px;
+    background: #009e49;
+    border: none;
+    border-radius: 25px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #fcd116;
+    color: black;
+}
+
+.feedback {
+    margin-top: 15px;
+    font-weight: bold;
+    min-height: 25px;
+}
+
+/* Intro overlay */
+#introScreen {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    cursor: pointer;
+}
+
+/* Popup */
+#clubPopup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #009e49;
+    color: black;
+    padding: 20px 40px;
+    border-radius: 20px;
+    font-weight: bold;
+    z-index: 9998;
+}
+</style>
+</head>
+<body>
+
+<div class="flag-bar"></div>
+
+<div id="introScreen">
+    <h1>🎂 21 MODE ACTIVATED 🎂</h1>
+    <p>Tap To Enter</p>
+</div>
+
+<div id="clubPopup">Club Entry Approved ✔</div>
+
+<audio id="bgMusic" loop>
+    <source src="indaclub.mp3" type="audio/mpeg">
+</audio>
+
+<div class="section">
+    <h1>ANJELI 21.0</h1>
+    <p>Caribbean Built. NY Raised.</p>
+</div>
+
+<div class="section">
+    <div class="card">There is always roti. Even when there is “no food.”</div>
+    <div class="card">Fridge: roti. Pantry: Trader Joe’s snacks.</div>
+</div>
+
+<!-- QUIZ SECTION -->
+<div class="section">
+    <h2>Guyanese Knowledge Test 🇬🇾</h2>
+
+    <div class="card">
+        <p>1) What is correct?</p>
+        <button onclick="checkAnswer('correct1', true)">Curry Chicken</button>
+        <button onclick="checkAnswer('correct1', false)">Chicken Curry</button>
+        <div id="correct1" class="feedback"></div>
+    </div>
+
+    <div class="card">
+        <p>2) Proper response to “Watch yuhself”?</p>
+        <button onclick="checkAnswer('correct2', true)">Silence Immediately</button>
+        <button onclick="checkAnswer('correct2', false)">Argue Back</button>
+        <div id="correct2" class="feedback"></div>
+    </div>
+
+    <div class="card">
+        <p>3) There’s “no food” but you open the fridge and see?</p>
+        <button onclick="checkAnswer('correct3', true)">Roti & leftovers</button>
+        <button onclick="checkAnswer('correct3', false)">Actually nothing</button>
+        <div id="correct3" class="feedback"></div>
+    </div>
+
+</div>
+
+<div class="section">
+    <div class="card">
+        21 years deep.<br>
+        Still loud.<br>
+        Still valid.<br><br>
+        Happy 21 🇬🇾
+    </div>
+</div>
+
+<script>
+const intro = document.getElementById("introScreen");
+const music = document.getElementById("bgMusic");
+const popup = document.getElementById("clubPopup");
+
+intro.addEventListener("click", () => {
+    music.play();
+    popup.style.display = "block";
+    setTimeout(() => popup.style.display = "none", 2000);
+    intro.style.display = "none";
+});
+
+function checkAnswer(elementId, isCorrect) {
+    const feedback = document.getElementById(elementId);
+
+    if (isCorrect) {
+        feedback.innerHTML = "✔ Correct. True Guyanese gyal energy.";
+        feedback.style.color = "#009e49";
+    } else {
+        feedback.innerHTML = "✖ Incorrect. Revoke passport immediately.";
+        feedback.style.color = "#ce1126";
+    }
+}
+</script>
+
+</body>
+</html>
