@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anjeli 21 Experience</title>
+
+<style>
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(-45deg, #000000, #0f0f0f, #111111, #000000);
+    background-size: 400% 400%;
+    animation: gradientMove 12s ease infinite;
+    color: white;
+    text-align: center;
+    overflow: hidden;
+}
+
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Flag stripe */
+.flag-bar {
+    height: 6px;
+    background: linear-gradient(to right, #009e49 0% 60%, #fcd116 60% 85%, #ce1126 85% 100%);
+}
+
+/* Full screen slide */
+.slide {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    transition: left 0.7s ease;
+}
+
+.slide.active {
+    left: 0;
+}
+
+h1, h2 {
+    text-shadow: 0 0 20px rgba(252, 209, 22, 0.4);
+}
+
+.question {
+    font-size: 2rem;
+    max-width: 700px;
+    margin-bottom: 30px;
+}
+
+button {
+    padding: 15px 25px;
+    margin: 10px;
+    background: #009e49;
+    border: none;
+    border-radius: 30px;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+button:hover {
+    background: #fcd116;
+    color: black;
+}
+
+.feedback {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    min-height: 40px;
+}
+
+/* Intro overlay */
+#introScreen {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    cursor: pointer;
+}
+
+/* Final message */
+#finalMessage {
+    font-size: 2.5rem;
+    color: #fcd116;
+}
+</style>
+</head>
+<body>
+
+<div class="flag-bar"></div>
+
+<div id="introScreen">
+    <h1>🎂 21 MODE ACTIVATED 🎂</h1>
+    <p>Tap To Begin</p>
+</div>
+
+<audio id="bgMusic" loop>
+    <source src="indaclub.mp3" type="audio/mpeg">
+</audio>
+
+<!-- Landing Slide -->
+<div class="slide active" id="slide0">
+    <h1>ANJELI 21</h1>
+    <p>Caribbean Built. American Raised.</p>
+    <button onclick="nextSlide()">Start Certification</button>
+</div>
+
+<!-- Question Slides -->
+<div class="slide" id="slide1">
+    <div class="question">What is correct?</div>
+    <button onclick="checkAnswer(1, true)">Chicken Curry</button>
+    <button onclick="checkAnswer(1, false)">Curry Chicken</button>
+    <div class="feedback" id="feedback1"></div>
+</div>
+
+<div class="slide" id="slide2">
+    <div class="question">Proper response to “Watch yuhself”?</div>
+    <button onclick="checkAnswer(2, true)">Silence Immediately</button>
+    <button onclick="checkAnswer(2, false)">Argue Back</button>
+    <div class="feedback" id="feedback2"></div>
+</div>
+
+<div class="slide" id="slide3">
+    <div class="question">There’s “no food” but you open the fridge and see?</div>
+    <button onclick="checkAnswer(3, true)">Roti & leftovers</button>
+    <button onclick="checkAnswer(3, false)">Actually nothing</button>
+    <div class="feedback" id="feedback3"></div>
+</div>
+
+<div class="slide" id="slide4">
+    <div class="question">Trader Joe’s snack energy?</div>
+    <button onclick="checkAnswer(4, true)">Random elite seasonal item</button>
+    <button onclick="checkAnswer(4, false)">Plain crackers</button>
+    <div class="feedback" id="feedback4"></div>
+</div>
+
+<div class="slide" id="slide5">
+    <div class="question">Volume level at family function?</div>
+    <button onclick="checkAnswer(5, true)">Competing with neighbors</button>
+    <button onclick="checkAnswer(5, false)">Respectfully moderate</button>
+    <div class="feedback" id="feedback5"></div>
+</div>
+
+<!-- Final Slide -->
+<div class="slide" id="slide6">
+    <div id="finalMessage"></div>
+</div>
+
+<script>
+const intro = document.getElementById("introScreen");
+const music = document.getElementById("bgMusic");
+
+intro.addEventListener("click", () => {
+    music.play();
+    intro.style.display = "none"; // instant fade
+});
+
+let currentSlide = 0;
+let score = 0;
+
+function nextSlide() {
+    document.getElementById("slide" + currentSlide).classList.remove("active");
+    currentSlide++;
+    document.getElementById("slide" + currentSlide).classList.add("active");
+}
+
+function checkAnswer(question, correct) {
+    const feedback = document.getElementById("feedback" + question);
+
+    if (feedback.innerHTML !== "") return;
+
+    let rightResponses = {
+        1: ["Correct. Chicken Curry always.", "Yes. Absolutely Chicken Curry.", "Certified answer."],
+        2: ["Correct. Silence saves lives.", "Exactly. You freeze immediately.", "That’s survival instinct."],
+        3: ["Correct. There is always roti.", "Obviously. Leftovers exist.", "Correct. The fridge never lies."],
+        4: ["Correct. Elite seasonal grab.", "Exactly. Random but elite.", "True Trader Joe’s energy."],
+        5: ["Correct. Competing with neighbors.", "Yes. Loud by default.", "Function volume undefeated."]
+    };
+
+    let wrongResponses = {
+        1: ["Curry Chicken? No.", "Absolutely not.", "We need to talk."],
+        2: ["Argue back? Risky.", "That’s brave of you.", "You want problems?"],
+        3: ["Nothing? Impossible.", "Check again.", "The roti is hiding."],
+        4: ["Plain crackers? Be serious.", "That’s unacceptable.", "We expected better."],
+        5: ["Moderate volume? Never.", "That’s unrealistic.", "Function means loud."]
+    };
+
+    if (correct) {
+        score++;
+        feedback.innerHTML = rightResponses[question][Math.floor(Math.random()*3)];
+        feedback.style.color = "#009e49";
+    } else {
+        feedback.innerHTML = wrongResponses[question][Math.floor(Math.random()*3)];
+        feedback.style.color = "#ce1126";
+    }
+
+    setTimeout(() => {
+        if (question < 5) {
+            nextSlide();
+        } else {
+            showFinal();
+        }
+    }, 1500);
+}
+
+function showFinal() {
+    document.getElementById("slide5").classList.remove("active");
+    document.getElementById("slide6").classList.add("active");
+
+    let message;
+
+    if (score === 5) {
+        message = "🏆 Certified Caribbean Elite.<br><br>🎉 HAPPY BIRTHDAY TWINN 🎉";
+    } else if (score >= 3) {
+        message = "⚡ Respectable Caribbean energy.<br><br>🎉 HAPPY BIRTHDAY TWINN 🎉";
+    } else {
+        message = "🚨 Needs retraining.<br><br>🎉 HAPPY BIRTHDAY TWINN 🎉";
+    }
+
+    document.getElementById("finalMessage").innerHTML = message;
+}
+</script>
+
+</body>
+</html>
