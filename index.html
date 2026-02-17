@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anjeli 21</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", sans-serif;
+}
+
+/* Tropical animated Guyanese background */
+body {
+    background: linear-gradient(135deg, #009739, #FCD116, #CE1126);
+    background-size: 300% 300%;
+    animation: tropicalShift 12s ease infinite;
+    overflow: hidden;
+}
+
+@keyframes tropicalShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Waving flag */
+.flag {
+    position: absolute;
+    top: 20px;
+    left: 25px;
+    width: 90px;
+    animation: wave 3s ease-in-out infinite;
+    transform-origin: left center;
+}
+
+@keyframes wave {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(3deg); }
+    50% { transform: rotate(-2deg); }
+    75% { transform: rotate(2deg); }
+    100% { transform: rotate(0deg); }
+}
+
+/* Slides */
+.slide {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+.slide.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* Big bright card */
+.card {
+    background: rgba(255,255,255,0.9);
+    padding: 60px;
+    border-radius: 30px;
+    width: 95%;
+    max-width: 720px;
+    text-align: center;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+    color: #111;
+}
+
+/* Big text */
+.card h2 {
+    font-size: 36px;
+    margin-bottom: 30px;
+}
+
+/* Big Guyanese buttons */
+button {
+    margin-top: 15px;
+    padding: 20px;
+    width: 100%;
+    border-radius: 18px;
+    border: none;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.25s;
+    background: linear-gradient(45deg, #009739, #FCD116);
+    color: #111;
+}
+
+button:hover {
+    transform: scale(1.06);
+    background: linear-gradient(45deg, #CE1126, #FCD116);
+}
+
+.feedback {
+    margin-top: 25px;
+    font-size: 22px;
+    font-weight: bold;
+    color: #CE1126;
+    min-height: 35px;
+}
+
+.progress {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+}
+
+/* Confetti */
+#confetti {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+</style>
+</head>
+
+<body>
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/9/99/Flag_of_Guyana.svg" class="flag">
+
+<div class="progress" id="progress"></div>
+<canvas id="confetti"></canvas>
+
+<audio id="bgMusic" loop>
+    <source src="indaclub.mp3" type="audio/mpeg">
+</audio>
+
+<!-- Intro -->
+<div class="slide active" id="slide0">
+    <div class="card">
+        <h2>ANJELI 21</h2>
+        <p style="font-size:22px;">Caribbean built. American outside.</p>
+        <br>
+        <button onclick="startExperience()">Enter LOCK IN Mode</button>
+    </div>
+</div>
+
+<!-- Questions -->
+<div class="slide" id="slide1">
+<div class="card">
+<h2>What is correct?</h2>
+<button onclick="answer(1,true)">Chicken curry</button>
+<button onclick="answer(1,false)">Curry chicken</button>
+<div class="feedback" id="feedback1"></div>
+</div>
+</div>
+
+<div class="slide" id="slide2">
+<div class="card">
+<h2>There is “no food”. What’s actually in the fridge?</h2>
+<button onclick="answer(2,true)">Roti. Obviously.</button>
+<button onclick="answer(2,false)">Nothing.</button>
+<div class="feedback" id="feedback2"></div>
+</div>
+</div>
+
+<div class="slide" id="slide3">
+<div class="card">
+<h2>Trader Joe’s run means:</h2>
+<button onclick="answer(3,true)">One snack turns into twelve.</button>
+<button onclick="answer(3,false)">Just milk and leave.</button>
+<div class="feedback" id="feedback3"></div>
+</div>
+</div>
+
+<div class="slide" id="slide4">
+<div class="card">
+<h2>Who ate the last roti?</h2>
+<button onclick="answer(4,false)">You.</button>
+<button onclick="answer(4,true)">Nobody knows.</button>
+<div class="feedback" id="feedback4"></div>
+</div>
+</div>
+
+<div class="slide" id="slide5">
+<div class="card">
+<h2>AC exists?</h2>
+<button onclick="answer(5,true)">Yes. Usage does not.</button>
+<button onclick="answer(5,false)">Always on.</button>
+<div class="feedback" id="feedback5"></div>
+</div>
+</div>
+
+<!-- Final -->
+<div class="slide" id="slide6">
+<div class="card">
+<div id="finalMessage" style="font-size:30px;"></div>
+<button id="replayBtn" onclick="replayExperience()"></button>
+</div>
+</div>
+
+<script>
+let currentSlide = 0;
+let score = 0;
+const totalQuestions = 5;
+const music = document.getElementById("bgMusic");
+
+function startExperience(){
+    music.volume = 0;
+    music.play().catch(()=>{});
+    fadeInMusic();
+    currentSlide = 1;
+    showSlide(currentSlide);
+}
+
+function fadeInMusic(){
+    let vol = 0;
+    const interval = setInterval(()=>{
+        if(vol < 0.6){
+            vol += 0.05;
+            music.volume = vol;
+        } else clearInterval(interval);
+    },200);
+}
+
+function updateProgress(){
+    document.getElementById("progress").innerText =
+        currentSlide === 0 ? "" : currentSlide + "/" + totalQuestions;
+}
+
+function showSlide(index){
+    document.querySelectorAll(".slide").forEach(s=>s.classList.remove("active"));
+    document.getElementById("slide"+index).classList.add("active");
+    updateProgress();
+}
+
+function answer(q, correct){
+    const feedback = document.getElementById("feedback"+q);
+
+    const responses = {
+        1: correct ? "See? Raised properly." : "Nope. We not embarrassing ourselves.",
+        2: correct ? "Exactly. There is ALWAYS roti." : "Check behind the pot.",
+        3: correct ? "$8 becomes $82 real quick." : "You’re lying.",
+        4: correct ? "Case remains unsolved." : "Hmm. Suspicious answer.",
+        5: correct ? "AC is decorative." : "Electric bill says no."
+    };
+
+    feedback.innerText = responses[q];
+    if(correct) score++;
+
+    setTimeout(()=>{
+        currentSlide++;
+        if(currentSlide <= totalQuestions){
+            showSlide(currentSlide);
+        } else {
+            finishExperience();
+        }
+    },900);
+}
+
+function finishExperience(){
+    showSlide(6);
+
+    let message;
+
+    if(score === 5){
+        message = "Yeah nah you different.<br><br>Real roti authority.<br><br>HAPPY BIRTHDAY TWINN.";
+        document.getElementById("replayBtn").innerText = "Run It Back Just To Flex";
+        launchConfetti();
+    } else {
+        message = "Solid performance.<br><br>HAPPY BIRTHDAY TWINN.";
+        document.getElementById("replayBtn").innerText = "Run It Back";
+    }
+
+    document.getElementById("finalMessage").innerHTML = message;
+}
+
+function replayExperience(){
+    score = 0;
+    currentSlide = 1;
+    document.querySelectorAll(".feedback").forEach(f=>f.innerText="");
+    showSlide(currentSlide);
+}
+
+function launchConfetti(){
+    const canvas = document.getElementById("confetti");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let pieces = Array.from({length:200}).map(()=>({
+        x: Math.random()*canvas.width,
+        y: Math.random()*canvas.height,
+        r: Math.random()*6+4
+    }));
+
+    function draw(){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.fillStyle = "#FCD116";
+        pieces.forEach(p=>{
+            ctx.beginPath();
+            ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+            ctx.fill();
+            p.y += 3;
+            if(p.y > canvas.height) p.y = 0;
+        });
+    }
+
+    setInterval(draw,20);
+}
+</script>
+
+</body>
+</html>
